@@ -21,8 +21,8 @@ export abstract class BaseComponent {
     cy.get('add-nav').contains('a', subMenu).click();
   }
 
-  clickByText(parent: string, text: string) {
-    cy.get(parent).contains(text).click();
+  clickByText(baseSelector: string, text: string) {
+    cy.get(baseSelector).contains(text).click();
   }
 
   dblClickByText(parent: string, text: string) {
@@ -178,5 +178,14 @@ export abstract class BaseComponent {
       .find('tab[heading*="component"]')
       .invoke('text')
       .should('to.contains', expectedTxt);
+  }
+
+  isElemTextCorrect(baseSelector: string, itemSel: string, expectedText: string, rowNum = 0) {
+      cy.get(baseSelector).find(itemSel).eq(rowNum).invoke('text')
+        .should('contain', expectedText);
+  }
+
+  isElementVisible(baseSelector: string, elementToFind: string, rowNum = 0) {
+    cy.get(`${ baseSelector } ${elementToFind}`).eq(rowNum).should('be.visible');
   }
 }
