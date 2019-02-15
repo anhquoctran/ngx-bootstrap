@@ -5,7 +5,10 @@ export class ModalsPo extends BaseComponent {
   pageTitle = 'Modals';
   ghLinkToComponent = 'https://github.com/valor-software/ngx-bootstrap/tree/development/src/modal';
 
-  modalContent = '.modal-content';
+  btnSelector = '.btn';
+  btnCross = 'button span';
+  modalWindow = '.modal-content';
+  backdropSelector = 'modal-backdrop fade';
   backServiceMod = 'modal-container';
   backDirectiveMod = '[bsmodal]';
   modalHeader = '.modal-header';
@@ -15,7 +18,7 @@ export class ModalsPo extends BaseComponent {
     serviceTemplate: 'demo-modal-service-static',
     serviceComponent: 'demo-modal-service-component',
     serviceNested: 'demo-modal-service-nested',
-    serviceScrol: 'demo-modal-scrolling-long-content',
+    serviceScroll: 'demo-modal-scrolling-long-content',
     serviceEvents: 'demo-modal-service-events',
     serviceConfirm: 'demo-modal-service-confirm-window',
     serviceOptions: 'demo-modal-service-options',
@@ -26,4 +29,23 @@ export class ModalsPo extends BaseComponent {
     directiveEvents: 'demo-modal-events',
     directiveAutoShow: 'demo-modal-auto-shown'
   };
+
+  isElementVisible(baseSelector: string, elementToFind: string, rowNum = 0) {
+    cy.get(`${ baseSelector } ${elementToFind}`).eq(rowNum).should('be.visible');
+  }
+
+  isElemTextCorrect(baseSelector: string, itemSel: string, expectedText: string, rowNum = 0) {
+    cy.get(baseSelector).find(itemSel).eq(rowNum).invoke('text')
+      .should('contain', expectedText);
+  }
+
+  isModalDisplayed(mdState: string) {
+    cy.get(this.modalWindow).last()
+      .should(mdState);
+  }
+
+  isBackdropEnabled(bdState: string) {
+    cy.get(this.backServiceMod).should(bdState);
+  }
+
 }

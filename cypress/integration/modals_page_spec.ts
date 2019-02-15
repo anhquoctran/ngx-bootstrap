@@ -8,65 +8,40 @@ describe('Modals demo page test suite', () => {
   describe('Service examples', () => {
 
     describe('Template modal', () => {
-      const templateModal = modals.exampleDemosArr.serviceTemplate;
-      const buttonText = 'Create template modal';
+      const modalTemplate = modals.exampleDemosArr.serviceTemplate;
+      const btnText = 'Create template modal';
 
-      it('template service modal can be opened by click on button and closed by backdrop-click', () => {
-        modals.clickByText(templateModal, buttonText);
-        cy.get(modals.modalContent).last()
-          .should('to.be.visible');
-
-        cy.get(modals.backServiceMod).as('modalAndBackdrop').click();
-        cy.get('@modalAndBackdrop')
-          .should('not.to.be.visible');
+      it('User scrolls to Template and sees btn "Create template modal"', () => {
+        modals.scrollToMenu('Template');
+        modals.isElementVisible(modalTemplate, modals.btnSelector);
+        modals.isElemTextCorrect(modalTemplate, modals.btnSelector, btnText);
       });
-    });
 
-    describe('Component modal', () => {
-      const componentModal = modals.exampleDemosArr.serviceComponent;
-      const buttonText = 'Create modal with component';
-      const modalCloseBtn = 'Close';
-
-      it('component service modal can be opened by click on button and closed by clicking Close button', () => {
-        modals.clickByText(componentModal, buttonText);
-        cy.get(modals.modalContent)
-          .should('to.be.visible');
-
-        modals.clickByText(modals.modalContent, modalCloseBtn);
-        cy.get(modals.backServiceMod)
-          .should('not.to.be.visible');
+      it('User clicks on "Create modal with component" btn, modal popup is opened, backdrop is enabled', () => {
+        modals.clickByText(modalTemplate, btnText);
+        modals.isModalDisplayed('be.visible');
+        // modals.isBackdropEnabled('be.enabled');  TODO: can't catch the element
       });
-    });
-  });
 
-  describe('Directive examples', () => {
-    describe('Static modal', () => {
-      const staticModal = modals.exampleDemosArr.directiveStatic;
-      const buttonText = 'Static modal';
-
-      it('directive static modal can be closed by clicking Close button', () => {
-        modals.clickByText(staticModal, buttonText);
-        cy.get(`${ staticModal } ${ modals.modalContent }`).as('staticMod')
-          .should('to.be.visible');
-
-        cy.get(`${ staticModal } ${ modals.modalHeader } ${ modals.btnCloseInHeader }`).click();
-        cy.get(`${ staticModal } ${ modals.backDirectiveMod }`)
-          .should('not.to.be.visible');
+      it('User closes modal popup by click on the cross, modal popup is closed and backdrop is disabled', () => {
+        modals.clickByText(modalTemplate, btnText);
+        cy.get('div.modal-header button').last().click(); // TODO: need a method/normal selector
+        modals.isModalDisplayed('not.be.enabled');
+        modals.isBackdropEnabled('not.be.enabled');
       });
-    });
 
-    describe('Child modal', () => {
-      const childModals = modals.exampleDemosArr.directiveChild;
-      const buttonText = 'Open child modal';
+      it('User is able to close modal popup by click on backdrop', () => {
+        modals.clickByText(modalTemplate, btnText);
+        modals.clickOutside(modals.modalWindow); // TODO does not work
+        modals.isModalDisplayed('not.be.enabled');
+        modals.isBackdropEnabled('not.be.enabled');
+      });
 
-      it('directive child modal can be closed by backdrop click', () => {
-        modals.clickByText(childModals, buttonText);
-        cy.get(`${ childModals } ${ modals.modalContent }`)
-          .should('to.be.visible');
-
-        cy.get(`${ childModals } ${ modals.backDirectiveMod }`).as('childModBack').click();
-        cy.get('@childModBack')
-          .should('not.to.be.visible');
+      it('User is able to close modal popup by press on ESC btn', () => {
+        modals.clickByText(modalTemplate, btnText);
+        cy.get('body').type('{esc}');
+        modals.isModalDisplayed('not.be.enabled');
+        modals.isBackdropEnabled('not.be.enabled');
       });
     });
   });
